@@ -1,0 +1,11 @@
+{
+  "name": "@packetsense/shared",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./constants.ts",
+  "types": "./types.ts",
+  "exports": {
+    "./constants": "./constants.ts",
+    "./types": "./types.ts"
+  }
+}

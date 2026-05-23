@@ -1,0 +1,183 @@
+{
+  "topics": {
+    "tcp": {
+      "label": "TCP (Transmission Control Protocol)",
+      "category": "Transport Layer",
+      "explanation": "TCP is like a reliable postal service for the internet. When you send data using TCP, it makes sure every single piece arrives at its destination, in the correct order, without any corruption.\n\nHere's how it works:\n1. **Connection Setup**: Before sending data, TCP does a 'three-way handshake' — think of it as two people confirming they can hear each other before starting a conversation.\n2. **Reliable Delivery**: Every piece of data gets a sequence number. The receiver acknowledges each piece. If something goes missing, TCP resends it.\n3. **Flow Control**: TCP adjusts how fast data is sent so the receiver isn't overwhelmed — like speaking slower when someone is taking notes.\n4. **Congestion Control**: TCP monitors the network for signs of congestion and slows down to prevent making things worse.",
+      "analogy": "Think of TCP like sending a certified letter through the post office. You get a receipt for each letter, you know the exact order they were sent, and if one goes missing, the post office sends it again. It's slower than just dropping letters in a mailbox, but you're guaranteed everything arrives.",
+      "key_points": [
+        "TCP is connection-oriented — a handshake happens before data flows",
+        "Every byte of data is numbered and acknowledged",
+        "Lost data is automatically retransmitted",
+        "Used for: web browsing, email, file transfers, SSH"
+      ],
+      "related_topics": ["udp", "tcp-handshake", "tcp-congestion", "tcp-retransmission"]
+    },
+    "udp": {
+      "label": "UDP (User Datagram Protocol)",
+      "category": "Transport Layer",
+      "explanation": "UDP is the 'quick and casual' cousin of TCP. It sends data as fast as possible without checking if it arrives. No handshake, no acknowledgments, no retransmissions.\n\nWhy would anyone use this? Because sometimes speed matters more than perfection:\n- In a video call, a dropped frame is better than a delayed one\n- In online gaming, you want the latest player position, not a retransmitted old one\n- DNS queries are tiny — one quick UDP packet is more efficient than a full TCP connection",
+      "analogy": "UDP is like shouting a message across a crowded room. You say it once and hope the person hears you. You don't wait for them to confirm they heard you, and you don't repeat yourself. It's fast but not guaranteed.",
+      "key_points": [
+        "Connectionless — no handshake needed",
+        "No delivery guarantee — packets can be lost",
+        "No ordering — packets may arrive out of sequence",
+        "Very low overhead — just 8 bytes of header vs TCP's 20+ bytes",
+        "Perfect for real-time applications where speed > reliability"
+      ],
+      "related_topics": ["tcp", "dns", "dhcp"]
+    },
+    "dns": {
+      "label": "DNS (Domain Name System)",
+      "category": "Application Layer",
+      "explanation": "DNS is the internet's phone book. Just like you look up a person's name to find their phone number, DNS looks up a website name (like google.com) to find its IP address (like 142.250.80.46).\n\nComputers communicate using IP addresses, but humans prefer names. DNS bridges this gap.\n\nThe lookup process is hierarchical:\n1. Your browser checks its own memory (cache)\n2. Your computer checks its DNS cache\n3. Your ISP's DNS resolver is asked\n4. The resolver asks Root servers → TLD servers → Authoritative servers\n5. The answer comes back and gets cached at every level",
+      "analogy": "Imagine you want to call a restaurant but only know its name. You check your phone contacts (cache), then call directory assistance (recursive resolver), who might check city records (root server), then the restaurant district registry (TLD), and finally the restaurant itself (authoritative server) to get the number.",
+      "key_points": [
+        "Translates human-readable names to IP addresses",
+        "Uses a hierarchical system of servers",
+        "Results are cached at multiple levels for speed",
+        "DNS typically uses UDP port 53",
+        "Common record types: A (IPv4), AAAA (IPv6), MX (mail), CNAME (alias)"
+      ],
+      "related_topics": ["tcp", "udp", "ip-addressing"]
+    },
+    "dhcp": {
+      "label": "DHCP (Dynamic Host Configuration Protocol)",
+      "category": "Application Layer",
+      "explanation": "DHCP is like a hotel front desk for your network. When a new device connects, it has no IP address — no way to communicate. DHCP automatically assigns it an address and all the configuration it needs.\n\nThe process follows four steps called DORA:\n1. **Discover**: Device shouts 'Is there a DHCP server here?'\n2. **Offer**: Server replies 'Yes! Here's an available IP address.'\n3. **Request**: Device says 'I'll take that one, please!'\n4. **Acknowledge**: Server confirms 'It's yours for the next 24 hours.'",
+      "analogy": "DHCP is like checking into a hotel. You walk up to the front desk (discover), they tell you which room is available (offer), you say 'I'll take it' (request), and they hand you the key (acknowledge). Your room assignment is temporary — when your stay (lease) expires, the room goes back to the pool.",
+      "key_points": [
+        "Automatically assigns IP addresses to devices",
+        "Follows the DORA process: Discover, Offer, Request, Acknowledge",
+        "Also provides: subnet mask, default gateway, DNS servers",
+        "Leases are temporary and must be renewed",
+        "Uses UDP ports 67 (server) and 68 (client)"
+      ],
+      "related_topics": ["arp", "dns", "ip-addressing"]
+    },
+    "arp": {
+      "label": "ARP (Address Resolution Protocol)",
+      "category": "Data Link Layer",
+      "explanation": "ARP answers a simple but critical question: 'I know the IP address, but what's the MAC address?'\n\nOn a local network, devices actually communicate using MAC addresses (hardware addresses), not IP addresses. ARP bridges these two worlds.\n\nWhen Device A wants to talk to Device B:\n1. Device A knows B's IP (e.g., 192.168.1.5) but not its MAC\n2. A shouts to everyone on the network: 'Who has 192.168.1.5?'\n3. Device B responds: 'That's me! My MAC is AA:BB:CC:DD:EE:FF'\n4. Device A saves this mapping and can now send data directly",
+      "analogy": "ARP is like going to a company reception and asking 'I'm looking for the person who sits at desk 42 — who is that?' Everyone hears you, but only the person at desk 42 responds with their name badge (MAC address). Now you can deliver your package directly.",
+      "key_points": [
+        "Maps IP addresses (Layer 3) to MAC addresses (Layer 2)",
+        "ARP requests are broadcast to all devices",
+        "ARP replies are unicast (sent directly back)",
+        "Results are cached in the ARP table with a timeout",
+        "ARP only works within a local network (same subnet)"
+      ],
+      "related_topics": ["dhcp", "switching", "ip-addressing"]
+    },
+    "osi-model": {
+      "label": "OSI Model",
+      "category": "Fundamentals",
+      "explanation": "The OSI (Open Systems Interconnection) model is a conceptual framework that describes how network communication works in 7 layers. Think of it as a standardized way to understand what happens when data travels from one computer to another.\n\nThe 7 layers from bottom to top:\n1. **Physical** (cables, voltages, radio waves)\n2. **Data Link** (MAC addresses, switches, frames)\n3. **Network** (IP addresses, routers, packets)\n4. **Transport** (TCP/UDP, ports, segments)\n5. **Session** (managing connections between apps)\n6. **Presentation** (encryption, compression, formatting)\n7. **Application** (HTTP, DNS, FTP — what users interact with)\n\nData flows DOWN the layers on the sending side (each layer adds its header) and UP the layers on the receiving side (each layer removes its header). This is called encapsulation and decapsulation.",
+      "analogy": "Think of sending a letter. You write the letter (Application), put it in an envelope (Presentation), address it (Session), choose priority mail (Transport), add the zip code for routing (Network), the mailman picks it up (Data Link), and a truck carries it physically (Physical). On the receiving end, the process reverses.",
+      "key_points": [
+        "7 layers: Please Do Not Throw Sausage Pizza Away (mnemonic bottom-up)",
+        "Each layer has a specific responsibility",
+        "Data is encapsulated going down, decapsulated going up",
+        "The TCP/IP model is the practical 4-layer equivalent",
+        "Troubleshooting tip: start at Layer 1 (Physical) and work up"
+      ],
+      "related_topics": ["tcp", "udp", "switching", "routing"]
+    },
+    "subnetting": {
+      "label": "Subnetting",
+      "category": "Network Layer",
+      "explanation": "Subnetting is the process of dividing a large network into smaller, more manageable pieces called subnets. It's like dividing a large office floor into departments.\n\nEvery IP address has two parts:\n- **Network portion**: Identifies which network (like the street name)\n- **Host portion**: Identifies which device on that network (like the house number)\n\nThe subnet mask tells you where the split is:\n- 255.255.255.0 (/24): First 3 octets = network, last octet = hosts → 254 usable IPs\n- 255.255.255.128 (/25): 126 usable IPs per subnet\n- 255.255.255.192 (/26): 62 usable IPs per subnet\n\nSubnetting helps with:\n- Reducing broadcast traffic\n- Improving security (isolating departments)\n- Efficient use of IP addresses",
+      "analogy": "Imagine a 100-room hotel that puts ALL guests on one floor. It's chaotic. Subnetting is like dividing the hotel into floors of 25 rooms each. Each floor has its own elevator (gateway), and guests on one floor don't disturb guests on another.",
+      "key_points": [
+        "Subnet mask defines the network/host boundary",
+        "CIDR notation (/24, /25, /26) is shorthand for subnet masks",
+        "Each subnet loses 2 addresses: network address and broadcast address",
+        "Powers of 2 determine subnet sizes: /24=254, /25=126, /26=62 hosts",
+        "Subnetting reduces broadcast domains and improves security"
+      ],
+      "related_topics": ["routing", "dhcp", "osi-model"]
+    },
+    "tcp-handshake": {
+      "label": "TCP Three-Way Handshake",
+      "category": "Transport Layer",
+      "explanation": "The TCP three-way handshake is the process that establishes a TCP connection. It's a three-step negotiation that ensures both sides are ready and synchronized.\n\nStep 1 - SYN: The client says 'Hey, I want to connect. My starting number is 100.'\nStep 2 - SYN-ACK: The server says 'Got it! My starting number is 300, and I acknowledge your 100.'\nStep 3 - ACK: The client says 'Great, I acknowledge your 300. Let's go!'\n\nAfter these three steps, the connection is ESTABLISHED and data can flow in both directions.",
+      "analogy": "It's like a phone call:\n1. You dial and say 'Hello?' (SYN)\n2. They answer 'Hello! I can hear you.' (SYN-ACK)\n3. You confirm 'Great, I can hear you too. Let's talk.' (ACK)\nOnly then does the actual conversation begin.",
+      "key_points": [
+        "Three steps: SYN → SYN-ACK → ACK",
+        "Synchronizes sequence numbers for both sides",
+        "Prevents old duplicate connections from being established",
+        "TCP connections are full-duplex (both directions simultaneously)"
+      ],
+      "related_topics": ["tcp", "tcp-retransmission", "tcp-congestion"]
+    },
+    "tcp-congestion": {
+      "label": "TCP Congestion Control",
+      "category": "Transport Layer",
+      "explanation": "TCP Congestion Control prevents the network from being overwhelmed. Imagine a highway — if too many cars enter at once, there's a traffic jam. TCP carefully controls how much data it sends to avoid creating 'data traffic jams.'\n\nThe key mechanism is the Congestion Window (cwnd):\n- Slow Start: cwnd starts small and grows exponentially (1→2→4→8→16)\n- Congestion Avoidance: After a threshold, growth becomes linear (16→17→18→19)\n- On packet loss: cwnd is drastically reduced and recovery begins\n\nThis creates a characteristic 'sawtooth' pattern where the sending rate gradually increases, then sharply drops when congestion is detected.",
+      "analogy": "Think of filling a bathtub with the drain slightly open. You start with a trickle (slow start), gradually increase the water flow (congestion avoidance), and when the tub starts overflowing (congestion detected), you quickly turn down the faucet (cwnd reduction). Then you carefully increase again.",
+      "key_points": [
+        "Slow Start: exponential growth to quickly find bandwidth",
+        "Congestion Avoidance: linear growth to carefully probe limits",
+        "Packet loss signals congestion",
+        "Modern algorithms: CUBIC (Linux), Compound TCP (Windows), BBR (Google)"
+      ],
+      "related_topics": ["tcp", "tcp-retransmission", "tcp-handshake"]
+    },
+    "switching": {
+      "label": "Network Switching",
+      "category": "Data Link Layer",
+      "explanation": "A network switch is a device that connects multiple devices on a local network and intelligently forwards data only to the intended recipient.\n\nUnlike a hub (which sends data to ALL ports), a switch learns which device is connected to which port by reading MAC addresses. It maintains a MAC address table:\n\nPort 1 → AA:BB:CC:11:22:33\nPort 2 → AA:BB:CC:44:55:66\nPort 3 → AA:BB:CC:77:88:99\n\nWhen a frame arrives, the switch checks the destination MAC and sends it only to the correct port. This is much more efficient than broadcasting everything.",
+      "analogy": "A hub is like shouting in a room — everyone hears you. A switch is like a receptionist who knows exactly which office each person sits in and delivers mail directly to the right desk.",
+      "key_points": [
+        "Operates at Layer 2 using MAC addresses",
+        "Maintains a MAC address table (CAM table)",
+        "Unknown destinations are flooded to all ports",
+        "VLANs create separate broadcast domains on one switch",
+        "STP prevents loops in networks with redundant switch links"
+      ],
+      "related_topics": ["arp", "osi-model", "routing"]
+    },
+    "routing": {
+      "label": "Network Routing",
+      "category": "Network Layer",
+      "explanation": "Routing is the process of finding the best path for data to travel from source to destination across multiple networks. Routers are the traffic police of the internet — they examine each packet's destination IP and decide where to send it next.\n\nRouters maintain a routing table — a map of known networks and the best path to reach them. Routes can be:\n- **Static**: Manually configured (simple but doesn't adapt)\n- **Dynamic**: Learned from routing protocols (OSPF, BGP, RIP) that automatically adapt to network changes\n\nWhen a router receives a packet:\n1. Check destination IP\n2. Look up the routing table for the best match\n3. Forward to the next-hop router\n4. Repeat until the destination is reached",
+      "analogy": "Routing is like GPS navigation. The router (GPS) knows the map of roads (routing table), receives your destination (IP address), and tells you which turn to take next (next hop). Dynamic routing protocols are like real-time traffic updates that reroute you around congestion.",
+      "key_points": [
+        "Routers connect different networks and forward packets between them",
+        "Routing tables map destinations to next-hop addresses",
+        "Longest prefix match determines the most specific route",
+        "Dynamic protocols: OSPF (internal), BGP (internet-wide)",
+        "Default route (0.0.0.0/0) is the 'catch-all' for unknown destinations"
+      ],
+      "related_topics": ["switching", "subnetting", "osi-model", "tcp"]
+    },
+    "firewall": {
+      "label": "Firewalls",
+      "category": "Security",
+      "explanation": "A firewall is a security guard for your network. It monitors all incoming and outgoing traffic and decides what to allow or block based on a set of rules.\n\nFirewalls can work at different layers:\n- **Packet filtering**: Checks IP addresses and ports (Layer 3-4)\n- **Stateful inspection**: Tracks connection state (is this reply part of an allowed conversation?)\n- **Application layer**: Inspects the actual content (is this HTTP request malicious?)\n\nCommon firewall rules:\n- Allow outgoing web traffic (ports 80, 443)\n- Allow incoming responses to your requests\n- Block unsolicited incoming connections\n- Block specific IP addresses or ports",
+      "analogy": "A firewall is like a bouncer at a club. The bouncer has a guest list (rules) and checks everyone entering and leaving. Some people are always allowed (established connections), some need to be on the list (specific rules), and unknown visitors are turned away (default deny).",
+      "key_points": [
+        "Monitors and filters network traffic based on rules",
+        "Can operate at network, transport, or application layer",
+        "Stateful firewalls track the state of connections",
+        "Default deny: block everything not explicitly allowed",
+        "Both hardware and software firewalls exist"
+      ],
+      "related_topics": ["tcp", "http-vs-https", "routing"]
+    },
+    "nat": {
+      "label": "NAT (Network Address Translation)",
+      "category": "Network Layer",
+      "explanation": "NAT is a technique that allows multiple devices on a private network to share a single public IP address when accessing the internet.\n\nYour home network might have 10 devices, each with a private IP (192.168.1.x). But your ISP only gives you ONE public IP address. NAT, running on your router, translates between private and public addresses:\n\n- Outgoing: Replace private IP (192.168.1.5) with public IP (203.0.113.1)\n- Incoming: Replace public IP back to the correct private IP\n\nThe router keeps a NAT table to track which internal device each connection belongs to, using port numbers to distinguish them.",
+      "analogy": "NAT is like a company receptionist. External callers dial one phone number (public IP), and the receptionist routes each call to the correct extension (private IP:port). From outside, everyone seems to have the same phone number.",
+      "key_points": [
+        "Allows many devices to share one public IP",
+        "Private IP ranges: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16",
+        "PAT (Port Address Translation) uses port numbers to track connections",
+        "Double NAT (two routers doing NAT) can cause connectivity issues",
+        "IPv6 was designed partly to eliminate the need for NAT"
+      ],
+      "related_topics": ["subnetting", "routing", "dhcp", "firewall"]
+    }
+  }
+}

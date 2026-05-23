@@ -1,0 +1,380 @@
+{
+  "categories": [
+    {
+      "name": "OSI Model",
+      "description": "Test your knowledge of the 7 layers of the OSI reference model",
+      "icon": "🏗️",
+      "questions": [
+        {
+          "question": "Which layer of the OSI model is responsible for end-to-end communication and error-free delivery?",
+          "options": ["Network Layer", "Transport Layer", "Session Layer", "Data Link Layer"],
+          "correct_answer": 1,
+          "explanation": "The Transport Layer (Layer 4) provides end-to-end communication, flow control, and error recovery. TCP and UDP operate at this layer.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "At which OSI layer do switches primarily operate?",
+          "options": ["Physical Layer", "Data Link Layer", "Network Layer", "Transport Layer"],
+          "correct_answer": 1,
+          "explanation": "Switches operate at the Data Link Layer (Layer 2), using MAC addresses to forward frames to the correct port.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Which layer is responsible for data encryption and compression?",
+          "options": ["Application Layer", "Presentation Layer", "Session Layer", "Transport Layer"],
+          "correct_answer": 1,
+          "explanation": "The Presentation Layer (Layer 6) handles data translation, encryption, and compression between the application and network.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What is the primary function of the Network Layer?",
+          "options": ["Frame synchronization", "Logical addressing and routing", "Session management", "Data encryption"],
+          "correct_answer": 1,
+          "explanation": "The Network Layer (Layer 3) handles logical addressing (IP addresses) and determines the best path for data routing.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Which PDU (Protocol Data Unit) is used at the Transport Layer?",
+          "options": ["Bits", "Frames", "Packets", "Segments"],
+          "correct_answer": 3,
+          "explanation": "The Transport Layer uses 'Segments' (TCP) or 'Datagrams' (UDP). The PDU hierarchy is: Bits → Frames → Packets → Segments → Data.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "The Session Layer is responsible for which of the following?",
+          "options": ["Routing packets", "Establishing and managing sessions", "Defining cable specifications", "Email transmission"],
+          "correct_answer": 1,
+          "explanation": "The Session Layer (Layer 5) manages sessions between applications — it handles setup, maintenance, and teardown of communication sessions.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Which OSI layer defines electrical signals, cable types, and physical topology?",
+          "options": ["Data Link Layer", "Network Layer", "Physical Layer", "Transport Layer"],
+          "correct_answer": 2,
+          "explanation": "The Physical Layer (Layer 1) defines the hardware elements — cables, voltages, pin layouts, and data rates.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "At which layer does the HTTP protocol operate?",
+          "options": ["Transport Layer", "Session Layer", "Presentation Layer", "Application Layer"],
+          "correct_answer": 3,
+          "explanation": "HTTP operates at the Application Layer (Layer 7), providing web browsing functionality directly to end users.",
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "name": "TCP/IP",
+      "description": "Questions about TCP, UDP, IP, and the TCP/IP protocol suite",
+      "icon": "🌐",
+      "questions": [
+        {
+          "question": "What is the purpose of the TCP three-way handshake?",
+          "options": ["To encrypt data", "To establish a reliable connection", "To assign IP addresses", "To resolve domain names"],
+          "correct_answer": 1,
+          "explanation": "The three-way handshake (SYN → SYN-ACK → ACK) establishes a reliable TCP connection and synchronizes sequence numbers between client and server.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Which flag combination is used in the second step of the TCP three-way handshake?",
+          "options": ["SYN", "SYN + ACK", "ACK", "FIN + ACK"],
+          "correct_answer": 1,
+          "explanation": "The server responds with SYN+ACK — acknowledging the client's SYN and sending its own synchronization request.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What is the maximum size of a TCP segment's data payload (MSS) typically set to?",
+          "options": ["512 bytes", "1460 bytes", "1500 bytes", "65535 bytes"],
+          "correct_answer": 1,
+          "explanation": "The typical MSS is 1460 bytes — derived from the standard MTU of 1500 bytes minus 20 bytes for IP header and 20 bytes for TCP header.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Which protocol is connectionless and does not guarantee delivery?",
+          "options": ["TCP", "UDP", "SCTP", "DCCP"],
+          "correct_answer": 1,
+          "explanation": "UDP (User Datagram Protocol) is connectionless — it sends data without establishing a connection and does not guarantee delivery, ordering, or duplicate protection.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What does TCP use to handle congestion in the network?",
+          "options": ["ARP tables", "Congestion window and slow start algorithm", "DNS caching", "MAC address filtering"],
+          "correct_answer": 1,
+          "explanation": "TCP uses a congestion window (cwnd) and algorithms like Slow Start, Congestion Avoidance, Fast Retransmit, and Fast Recovery to manage network congestion.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What is the size of an IPv4 address?",
+          "options": ["16 bits", "32 bits", "64 bits", "128 bits"],
+          "correct_answer": 1,
+          "explanation": "IPv4 addresses are 32 bits (4 bytes), typically represented in dotted-decimal notation like 192.168.1.1. IPv6 addresses are 128 bits.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What does the TTL field in an IP packet prevent?",
+          "options": ["Data corruption", "Packet sniffing", "Infinite routing loops", "Duplicate packets"],
+          "correct_answer": 2,
+          "explanation": "TTL (Time to Live) is decremented by each router. When it reaches 0, the packet is discarded — preventing infinite loops in case of routing errors.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "In TCP, what triggers a fast retransmit?",
+          "options": ["Timeout expiration", "Receiving 3 duplicate ACKs", "Receiving a RST packet", "Window size reaching zero"],
+          "correct_answer": 1,
+          "explanation": "Fast Retransmit is triggered when the sender receives 3 duplicate ACKs for the same segment, indicating packet loss without waiting for a timeout.",
+          "difficulty": "hard"
+        }
+      ]
+    },
+    {
+      "name": "Subnetting",
+      "description": "Practice subnetting, CIDR notation, and IP address calculations",
+      "icon": "🔢",
+      "questions": [
+        {
+          "question": "What is the subnet mask for a /24 network?",
+          "options": ["255.255.0.0", "255.255.255.0", "255.255.255.128", "255.255.255.252"],
+          "correct_answer": 1,
+          "explanation": "/24 means 24 bits for the network portion, which translates to 255.255.255.0 (three full octets masked).",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How many usable host addresses are in a /28 subnet?",
+          "options": ["14", "16", "30", "32"],
+          "correct_answer": 0,
+          "explanation": "/28 = 32 - 28 = 4 host bits = 2^4 = 16 addresses. Subtract 2 (network and broadcast) = 14 usable hosts.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What is the network address of 192.168.10.67/26?",
+          "options": ["192.168.10.0", "192.168.10.64", "192.168.10.67", "192.168.10.128"],
+          "correct_answer": 1,
+          "explanation": "/26 means blocks of 64. 67 falls in the 64-127 block, so the network address is 192.168.10.64.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Which of the following is a private IP address range?",
+          "options": ["8.0.0.0 – 8.255.255.255", "172.16.0.0 – 172.31.255.255", "200.0.0.0 – 200.255.255.255", "100.0.0.0 – 100.127.255.255"],
+          "correct_answer": 1,
+          "explanation": "172.16.0.0 to 172.31.255.255 is one of three private IP ranges (RFC 1918). The others are 10.0.0.0/8 and 192.168.0.0/16.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What is CIDR and what problem does it solve?",
+          "options": ["A routing protocol that replaces OSPF", "A notation system that replaces classful addressing for efficient IP allocation", "A DNS resolution method", "A firewall configuration standard"],
+          "correct_answer": 1,
+          "explanation": "CIDR (Classless Inter-Domain Routing) allows variable-length subnet masks, replacing the wasteful Class A/B/C system for more efficient IP allocation.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What is the broadcast address of the subnet 10.0.0.0/22?",
+          "options": ["10.0.0.255", "10.0.1.255", "10.0.3.255", "10.0.4.255"],
+          "correct_answer": 2,
+          "explanation": "/22 gives 2^(32-22) = 1024 addresses. Starting at 10.0.0.0, the range ends at 10.0.3.255 (broadcast address).",
+          "difficulty": "hard"
+        }
+      ]
+    },
+    {
+      "name": "DNS",
+      "description": "Domain Name System resolution, record types, and caching",
+      "icon": "📡",
+      "questions": [
+        {
+          "question": "What is the primary purpose of DNS?",
+          "options": ["Encrypting web traffic", "Translating domain names to IP addresses", "Assigning IP addresses to hosts", "Routing packets between networks"],
+          "correct_answer": 1,
+          "explanation": "DNS (Domain Name System) translates human-readable domain names (like google.com) into IP addresses (like 142.250.80.46) that computers use.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Which DNS record type maps a domain name to an IPv4 address?",
+          "options": ["AAAA", "CNAME", "A", "MX"],
+          "correct_answer": 2,
+          "explanation": "An 'A' record maps a domain to an IPv4 address. 'AAAA' is for IPv6, 'CNAME' is an alias, and 'MX' is for mail servers.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What is the correct order of DNS resolution (recursive query)?",
+          "options": [
+            "Browser → Root → TLD → Authoritative",
+            "Browser → Recursive Resolver → Root → TLD → Authoritative",
+            "Browser → Authoritative → Root → TLD",
+            "Browser → TLD → Root → Authoritative"
+          ],
+          "correct_answer": 1,
+          "explanation": "A full DNS resolution follows: Browser cache → Recursive Resolver → Root Server → TLD Server → Authoritative Server, each step narrowing down the domain.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What does TTL mean in the context of DNS records?",
+          "options": ["Total Transfer Length", "Time to Live — how long a record is cached", "Transport Tunnel Layer", "Top-level Tag Length"],
+          "correct_answer": 1,
+          "explanation": "TTL (Time to Live) in DNS specifies how long (in seconds) a DNS record should be cached by resolvers before requesting a fresh copy.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Which DNS record type is used for email server routing?",
+          "options": ["A", "CNAME", "MX", "NS"],
+          "correct_answer": 2,
+          "explanation": "MX (Mail Exchange) records specify the mail servers responsible for receiving email for a domain, along with priority values.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What port does DNS typically use?",
+          "options": ["Port 25", "Port 53", "Port 80", "Port 443"],
+          "correct_answer": 1,
+          "explanation": "DNS uses port 53 for both UDP (standard queries) and TCP (zone transfers and large responses).",
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "name": "DHCP",
+      "description": "Dynamic Host Configuration Protocol and IP address assignment",
+      "icon": "🔄",
+      "questions": [
+        {
+          "question": "What does DHCP stand for?",
+          "options": ["Dynamic Host Control Protocol", "Dynamic Host Configuration Protocol", "Data Host Configuration Protocol", "Dynamic Hypertext Configuration Protocol"],
+          "correct_answer": 1,
+          "explanation": "DHCP stands for Dynamic Host Configuration Protocol — it automatically assigns IP addresses and network configuration to devices on a network.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What is the correct order of the DHCP DORA process?",
+          "options": ["Discover → Offer → Request → Acknowledge", "Demand → Offer → Reply → Accept", "Detect → Open → Request → Assign", "Discover → Open → Reply → Acknowledge"],
+          "correct_answer": 0,
+          "explanation": "DORA: Discover (client broadcasts), Offer (server offers IP), Request (client requests offered IP), Acknowledge (server confirms assignment).",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What transport protocol and port does DHCP use?",
+          "options": ["TCP port 53", "UDP ports 67 (server) and 68 (client)", "TCP port 80", "UDP port 123"],
+          "correct_answer": 1,
+          "explanation": "DHCP uses UDP — the server listens on port 67 and the client listens on port 68. UDP is used because the client may not have an IP yet.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What is a DHCP lease?",
+          "options": ["A permanent IP assignment", "A temporary IP assignment with an expiration time", "A DNS record type", "A firewall rule"],
+          "correct_answer": 1,
+          "explanation": "A DHCP lease is a temporary assignment of an IP address. The client must renew the lease before it expires to keep the same IP.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What happens during a DHCP Discover message?",
+          "options": ["Server sends an IP to a specific client", "Client broadcasts to find available DHCP servers", "Client releases its IP address", "Server removes an IP from the pool"],
+          "correct_answer": 1,
+          "explanation": "DHCP Discover is a broadcast message (255.255.255.255) sent by a client to find any available DHCP servers on the network.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What additional information can DHCP provide besides an IP address?",
+          "options": ["Only the subnet mask", "Subnet mask, default gateway, DNS servers, and lease duration", "Only DNS server addresses", "Only the default gateway"],
+          "correct_answer": 1,
+          "explanation": "DHCP can provide: IP address, subnet mask, default gateway, DNS servers, domain name, lease duration, and other network parameters.",
+          "difficulty": "medium"
+        }
+      ]
+    },
+    {
+      "name": "Routing",
+      "description": "Routing protocols, algorithms, and path selection",
+      "icon": "🛤️",
+      "questions": [
+        {
+          "question": "What is the difference between static and dynamic routing?",
+          "options": ["Static uses algorithms, dynamic is manual", "Static is manually configured, dynamic uses routing protocols", "They are the same", "Static only works with IPv6"],
+          "correct_answer": 1,
+          "explanation": "Static routing requires manual configuration of routes. Dynamic routing uses protocols (OSPF, BGP, RIP) to automatically discover and update routes.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Which routing protocol uses hop count as its metric and has a maximum of 15 hops?",
+          "options": ["OSPF", "BGP", "RIP", "EIGRP"],
+          "correct_answer": 2,
+          "explanation": "RIP (Routing Information Protocol) uses hop count as its metric with a maximum of 15 hops. 16 hops = unreachable. This limits RIP to smaller networks.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What type of routing protocol is BGP?",
+          "options": ["Interior Gateway Protocol", "Exterior Gateway Protocol", "Link-State Protocol", "Distance-Vector Protocol"],
+          "correct_answer": 1,
+          "explanation": "BGP (Border Gateway Protocol) is an Exterior Gateway Protocol used for routing between autonomous systems (AS) on the internet.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What algorithm does OSPF use to calculate the shortest path?",
+          "options": ["Bellman-Ford", "Dijkstra's SPF", "Floyd-Warshall", "A* Search"],
+          "correct_answer": 1,
+          "explanation": "OSPF uses Dijkstra's Shortest Path First (SPF) algorithm to calculate the best route to each destination in its link-state database.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What is the purpose of a default route (0.0.0.0/0)?",
+          "options": ["Block all traffic", "Route packets when no specific match exists in the routing table", "Assign IP addresses", "Encrypt traffic"],
+          "correct_answer": 1,
+          "explanation": "The default route (0.0.0.0/0) is a catch-all — it forwards packets to a next-hop gateway when no more specific route matches in the routing table.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What is administrative distance in routing?",
+          "options": ["Physical distance between routers", "A value indicating the trustworthiness of a routing source", "The number of hops", "The bandwidth of a link"],
+          "correct_answer": 1,
+          "explanation": "Administrative distance is a value (0-255) that rates the trustworthiness of routing information. Lower = more trusted. Directly connected = 0, Static = 1, OSPF = 110, RIP = 120.",
+          "difficulty": "hard"
+        }
+      ]
+    },
+    {
+      "name": "Switching",
+      "description": "Layer 2 switching, VLANs, STP, and MAC address tables",
+      "icon": "🔀",
+      "questions": [
+        {
+          "question": "What does a network switch use to forward frames?",
+          "options": ["IP addresses", "MAC addresses", "Port numbers", "Domain names"],
+          "correct_answer": 1,
+          "explanation": "Switches operate at Layer 2 and use MAC (Media Access Control) addresses to make forwarding decisions using their MAC address table.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What is a VLAN?",
+          "options": ["A type of cable", "A virtual local area network that logically segments a physical network", "A routing protocol", "A wireless standard"],
+          "correct_answer": 1,
+          "explanation": "VLANs (Virtual LANs) logically divide a physical switch into separate broadcast domains, improving security and performance.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What is the purpose of Spanning Tree Protocol (STP)?",
+          "options": ["Load balancing", "Preventing Layer 2 loops", "Encrypting traffic", "Assigning VLANs"],
+          "correct_answer": 1,
+          "explanation": "STP prevents broadcast storms and loops in networks with redundant Layer 2 paths by blocking certain ports to create a loop-free topology.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What happens when a switch receives a frame for an unknown MAC address?",
+          "options": ["Drops the frame", "Sends an error", "Floods the frame to all ports except the source", "Sends it to the default gateway"],
+          "correct_answer": 2,
+          "explanation": "When the destination MAC is not in the MAC table, the switch floods (forwards) the frame out all ports except the one it was received on.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What is a trunk port on a switch?",
+          "options": ["A port that connects to end devices", "A port that carries traffic for multiple VLANs between switches", "A port used only for management", "A port that blocks all traffic"],
+          "correct_answer": 1,
+          "explanation": "Trunk ports carry traffic for multiple VLANs using tagging (802.1Q). They connect switches together and preserve VLAN membership across devices.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Which IEEE standard defines VLAN tagging?",
+          "options": ["802.11", "802.1Q", "802.3", "802.1X"],
+          "correct_answer": 1,
+          "explanation": "IEEE 802.1Q defines VLAN tagging — it adds a 4-byte tag to Ethernet frames to identify which VLAN the frame belongs to.",
+          "difficulty": "hard"
+        }
+      ]
+    }
+  ]
+}

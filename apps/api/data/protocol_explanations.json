@@ -1,0 +1,431 @@
+{
+  "protocols": {
+    "tcp-handshake": {
+      "name": "TCP 3-Way Handshake",
+      "description": "The process by which TCP establishes a reliable connection between client and server",
+      "category": "Transport Layer",
+      "overview": "Before any data can be exchanged over TCP, both the client and server must agree to communicate. The 3-way handshake synchronizes sequence numbers and establishes the connection parameters.",
+      "steps": [
+        {
+          "id": 1,
+          "label": "SYN",
+          "description": "Client sends a SYN (synchronize) segment to the server with an initial sequence number (ISN). This is like raising your hand and saying 'I want to talk to you.'",
+          "from": "Client",
+          "to": "Server",
+          "packet_label": "SYN seq=100",
+          "color": "#06b6d4"
+        },
+        {
+          "id": 2,
+          "label": "SYN-ACK",
+          "description": "Server responds with SYN-ACK — acknowledging the client's SYN and sending its own sequence number. This is the server saying 'I heard you and I want to talk too.'",
+          "from": "Server",
+          "to": "Client",
+          "packet_label": "SYN-ACK seq=300 ack=101",
+          "color": "#8b5cf6"
+        },
+        {
+          "id": 3,
+          "label": "ACK",
+          "description": "Client sends an ACK confirming the server's sequence number. The connection is now established and data transfer can begin. Both sides are synchronized.",
+          "from": "Client",
+          "to": "Server",
+          "packet_label": "ACK ack=301",
+          "color": "#10b981"
+        }
+      ],
+      "key_concepts": [
+        "Sequence numbers are used to track and order data",
+        "Each side must acknowledge the other's sequence number",
+        "The handshake prevents old duplicate connections from being accepted",
+        "After the handshake, the connection is ESTABLISHED"
+      ]
+    },
+    "tcp-retransmission": {
+      "name": "TCP Retransmission",
+      "description": "How TCP recovers from lost or corrupted packets by retransmitting them",
+      "category": "Transport Layer",
+      "overview": "TCP guarantees reliable delivery. When a sent packet doesn't receive an acknowledgment within a timeout period, TCP retransmits the data. This ensures no data is lost even on unreliable networks.",
+      "steps": [
+        {
+          "id": 1,
+          "label": "Data Sent",
+          "description": "Client sends a data segment with sequence number. A retransmission timer starts.",
+          "from": "Client",
+          "to": "Server",
+          "packet_label": "DATA seq=1001 (500 bytes)",
+          "color": "#06b6d4"
+        },
+        {
+          "id": 2,
+          "label": "Packet Lost",
+          "description": "The packet is lost in transit due to network congestion, corruption, or hardware failure. The server never receives it.",
+          "from": "Client",
+          "to": "Network",
+          "packet_label": "❌ LOST",
+          "color": "#ef4444"
+        },
+        {
+          "id": 3,
+          "label": "Timeout",
+          "description": "The retransmission timer expires (RTO). No ACK was received, so TCP assumes the packet was lost.",
+          "from": "Client",
+          "to": "Client",
+          "packet_label": "⏱️ RTO Expired",
+          "color": "#f59e0b"
+        },
+        {
+          "id": 4,
+          "label": "Retransmit",
+          "description": "TCP retransmits the same data segment. The RTO is typically doubled (exponential backoff) for subsequent retransmissions.",
+          "from": "Client",
+          "to": "Server",
+          "packet_label": "DATA seq=1001 (retransmit)",
+          "color": "#06b6d4"
+        },
+        {
+          "id": 5,
+          "label": "ACK Received",
+          "description": "Server receives the retransmitted packet and sends an ACK. Data delivery is confirmed and the sender can proceed.",
+          "from": "Server",
+          "to": "Client",
+          "packet_label": "ACK ack=1501",
+          "color": "#10b981"
+        }
+      ],
+      "key_concepts": [
+        "RTO (Retransmission Timeout) is dynamically calculated based on RTT",
+        "Exponential backoff doubles the RTO after each failed retransmission",
+        "Fast Retransmit triggers after 3 duplicate ACKs without waiting for timeout",
+        "Selective ACK (SACK) allows acknowledging non-contiguous segments"
+      ]
+    },
+    "tcp-congestion": {
+      "name": "TCP Congestion Control / Slow Start",
+      "description": "How TCP manages sending rate to avoid overwhelming the network",
+      "category": "Transport Layer",
+      "overview": "TCP doesn't blast data at full speed — it gradually increases its sending rate to probe available bandwidth. When congestion is detected, it backs off to prevent network collapse.",
+      "steps": [
+        {
+          "id": 1,
+          "label": "Slow Start",
+          "description": "Connection begins with congestion window (cwnd) = 1 MSS. Each ACK doubles the window, causing exponential growth.",
+          "from": "Client",
+          "to": "Server",
+          "packet_label": "cwnd = 1 MSS",
+          "color": "#06b6d4"
+        },
+        {
+          "id": 2,
+          "label": "Exponential Growth",
+          "description": "cwnd doubles each RTT: 1→2→4→8→16 segments. Bandwidth utilization rapidly increases.",
+          "from": "Client",
+          "to": "Server",
+          "packet_label": "cwnd = 2→4→8 MSS",
+          "color": "#8b5cf6"
+        },
+        {
+          "id": 3,
+          "label": "ssthresh Reached",
+          "description": "When cwnd reaches the slow-start threshold (ssthresh), growth switches from exponential to linear (congestion avoidance).",
+          "from": "Client",
+          "to": "Server",
+          "packet_label": "cwnd = ssthresh (16 MSS)",
+          "color": "#f59e0b"
+        },
+        {
+          "id": 4,
+          "label": "Congestion Avoidance",
+          "description": "cwnd increases by 1 MSS per RTT — linear growth. This carefully probes for additional bandwidth.",
+          "from": "Client",
+          "to": "Server",
+          "packet_label": "cwnd = 17→18→19 MSS",
+          "color": "#10b981"
+        },
+        {
+          "id": 5,
+          "label": "Congestion Detected",
+          "description": "Packet loss detected (timeout or 3 duplicate ACKs). ssthresh set to cwnd/2, cwnd resets. Recovery begins.",
+          "from": "Network",
+          "to": "Client",
+          "packet_label": "❌ Loss → cwnd reset",
+          "color": "#ef4444"
+        }
+      ],
+      "key_concepts": [
+        "Slow Start rapidly finds available bandwidth",
+        "Congestion Avoidance carefully probes for more bandwidth",
+        "Packet loss signals congestion — TCP backs off",
+        "Modern TCP uses CUBIC or BBR algorithms for improved performance"
+      ]
+    },
+    "udp-communication": {
+      "name": "UDP Communication",
+      "description": "Connectionless, fast data transmission without reliability guarantees",
+      "category": "Transport Layer",
+      "overview": "UDP is the 'fire and forget' protocol. It sends data without establishing a connection, without acknowledgments, and without guaranteeing delivery. This makes it faster but less reliable than TCP.",
+      "steps": [
+        {
+          "id": 1,
+          "label": "Send Datagram",
+          "description": "Client sends a UDP datagram directly to the server. No connection setup needed — data is sent immediately.",
+          "from": "Client",
+          "to": "Server",
+          "packet_label": "UDP Datagram (payload)",
+          "color": "#06b6d4"
+        },
+        {
+          "id": 2,
+          "label": "Received (maybe)",
+          "description": "If the datagram arrives, the server processes it. No acknowledgment is sent back. The client doesn't know if it arrived.",
+          "from": "Server",
+          "to": "Server",
+          "packet_label": "✅ Process data",
+          "color": "#10b981"
+        },
+        {
+          "id": 3,
+          "label": "Another Datagram",
+          "description": "Client sends another datagram. It may arrive before, after, or never. UDP doesn't guarantee ordering.",
+          "from": "Client",
+          "to": "Server",
+          "packet_label": "UDP Datagram #2",
+          "color": "#8b5cf6"
+        },
+        {
+          "id": 4,
+          "label": "Lost Datagram",
+          "description": "A datagram is lost in transit. UDP doesn't detect or recover from this — the application must handle it if needed.",
+          "from": "Client",
+          "to": "Network",
+          "packet_label": "❌ Lost (no retransmit)",
+          "color": "#ef4444"
+        }
+      ],
+      "key_concepts": [
+        "No handshake — lower latency than TCP",
+        "No acknowledgments — sender doesn't know if data arrived",
+        "No ordering — packets may arrive out of order",
+        "Used for: DNS, VoIP, gaming, video streaming, DHCP"
+      ]
+    },
+    "dns-lookup": {
+      "name": "DNS Lookup Process",
+      "description": "How domain names are resolved to IP addresses through the DNS hierarchy",
+      "category": "Application Layer",
+      "overview": "When you type 'google.com' in your browser, a complex chain of queries converts that human-readable name into an IP address. This process involves multiple DNS servers in a hierarchical system.",
+      "steps": [
+        {
+          "id": 1,
+          "label": "Browser Cache",
+          "description": "Browser first checks its local DNS cache. If the domain was recently resolved, the cached IP is used immediately.",
+          "from": "Browser",
+          "to": "Browser Cache",
+          "packet_label": "Check cache for google.com",
+          "color": "#06b6d4"
+        },
+        {
+          "id": 2,
+          "label": "Recursive Resolver",
+          "description": "If not cached, the query goes to a recursive DNS resolver (usually your ISP's or a public one like 8.8.8.8).",
+          "from": "Browser",
+          "to": "Recursive Resolver",
+          "packet_label": "Query: google.com → ?",
+          "color": "#8b5cf6"
+        },
+        {
+          "id": 3,
+          "label": "Root Server",
+          "description": "The resolver queries a root DNS server. It doesn't know google.com's IP, but it knows where to find .com servers.",
+          "from": "Recursive Resolver",
+          "to": "Root DNS Server",
+          "packet_label": "Referral → .com TLD",
+          "color": "#f59e0b"
+        },
+        {
+          "id": 4,
+          "label": "TLD Server",
+          "description": "The .com TLD server is queried. It refers the resolver to Google's authoritative nameserver.",
+          "from": "Recursive Resolver",
+          "to": ".com TLD Server",
+          "packet_label": "Referral → ns1.google.com",
+          "color": "#ec4899"
+        },
+        {
+          "id": 5,
+          "label": "Authoritative Server",
+          "description": "Google's authoritative DNS server returns the actual IP address for google.com.",
+          "from": "Recursive Resolver",
+          "to": "Authoritative DNS",
+          "packet_label": "Answer: 142.250.80.46",
+          "color": "#10b981"
+        },
+        {
+          "id": 6,
+          "label": "Response",
+          "description": "The resolver caches the result and returns it to the browser. The browser can now connect to the IP address.",
+          "from": "Recursive Resolver",
+          "to": "Browser",
+          "packet_label": "google.com = 142.250.80.46",
+          "color": "#10b981"
+        }
+      ],
+      "key_concepts": [
+        "DNS is hierarchical: Root → TLD → Authoritative",
+        "Caching at every level reduces lookup time",
+        "TTL determines how long a record is cached",
+        "DNS typically uses UDP port 53 for queries"
+      ]
+    },
+    "arp-resolution": {
+      "name": "ARP Resolution",
+      "description": "How devices discover MAC addresses on a local network using ARP",
+      "category": "Data Link Layer",
+      "overview": "ARP (Address Resolution Protocol) bridges the gap between IP addresses (Layer 3) and MAC addresses (Layer 2). When a device needs to send data on a local network, it must know the recipient's MAC address.",
+      "steps": [
+        {
+          "id": 1,
+          "label": "Need MAC Address",
+          "description": "Device A wants to send data to 192.168.1.5 but doesn't know its MAC address. It checks its ARP cache first.",
+          "from": "Device A",
+          "to": "ARP Cache",
+          "packet_label": "Lookup 192.168.1.5 → ???",
+          "color": "#06b6d4"
+        },
+        {
+          "id": 2,
+          "label": "ARP Request (Broadcast)",
+          "description": "Not in cache! Device A broadcasts an ARP request to all devices: 'Who has 192.168.1.5? Tell 192.168.1.1'",
+          "from": "Device A",
+          "to": "All Devices (Broadcast)",
+          "packet_label": "Who has 192.168.1.5?",
+          "color": "#f59e0b"
+        },
+        {
+          "id": 3,
+          "label": "ARP Reply (Unicast)",
+          "description": "Device B (192.168.1.5) responds with its MAC address: 'I am 192.168.1.5, my MAC is AA:BB:CC:DD:EE:FF'",
+          "from": "Device B",
+          "to": "Device A",
+          "packet_label": "I'm at AA:BB:CC:DD:EE:FF",
+          "color": "#10b981"
+        },
+        {
+          "id": 4,
+          "label": "Cache Updated",
+          "description": "Device A stores the IP-to-MAC mapping in its ARP cache for future use (typically 2-20 minutes).",
+          "from": "Device A",
+          "to": "ARP Cache",
+          "packet_label": "Cached: 192.168.1.5 → AA:BB:CC:DD:EE:FF",
+          "color": "#8b5cf6"
+        }
+      ],
+      "key_concepts": [
+        "ARP operates at Layer 2 (Data Link) bridging to Layer 3 (Network)",
+        "ARP requests are broadcast, ARP replies are unicast",
+        "ARP cache entries expire after a timeout period",
+        "ARP spoofing is a common network attack vector"
+      ]
+    },
+    "dhcp-assignment": {
+      "name": "DHCP IP Assignment",
+      "description": "How devices automatically obtain IP addresses using the DORA process",
+      "category": "Application Layer",
+      "overview": "DHCP automates network configuration. Instead of manually setting IPs, devices can request all network settings from a DHCP server using the DORA process: Discover, Offer, Request, Acknowledge.",
+      "steps": [
+        {
+          "id": 1,
+          "label": "DHCP Discover",
+          "description": "New device broadcasts: 'Is there a DHCP server out there?' It has no IP yet, so it sends from 0.0.0.0 to 255.255.255.255.",
+          "from": "Client (0.0.0.0)",
+          "to": "Broadcast (255.255.255.255)",
+          "packet_label": "DISCOVER: I need an IP!",
+          "color": "#06b6d4"
+        },
+        {
+          "id": 2,
+          "label": "DHCP Offer",
+          "description": "DHCP server responds with an available IP address and configuration: 'You can have 192.168.1.100 for 24 hours.'",
+          "from": "DHCP Server",
+          "to": "Client",
+          "packet_label": "OFFER: 192.168.1.100",
+          "color": "#8b5cf6"
+        },
+        {
+          "id": 3,
+          "label": "DHCP Request",
+          "description": "Client broadcasts acceptance: 'I'll take that IP please!' (Broadcast so other DHCP servers know the offer was accepted elsewhere.)",
+          "from": "Client",
+          "to": "Broadcast",
+          "packet_label": "REQUEST: I want 192.168.1.100",
+          "color": "#f59e0b"
+        },
+        {
+          "id": 4,
+          "label": "DHCP Acknowledge",
+          "description": "Server confirms and sends full configuration: IP, subnet mask, gateway, DNS servers, and lease duration.",
+          "from": "DHCP Server",
+          "to": "Client",
+          "packet_label": "ACK: Confirmed! IP=192.168.1.100, GW=192.168.1.1, DNS=8.8.8.8",
+          "color": "#10b981"
+        }
+      ],
+      "key_concepts": [
+        "DORA: Discover → Offer → Request → Acknowledge",
+        "Uses UDP ports 67 (server) and 68 (client)",
+        "Leases are temporary — clients must renew before expiry",
+        "DHCP also provides subnet mask, gateway, and DNS servers"
+      ]
+    },
+    "http-vs-https": {
+      "name": "HTTP vs HTTPS Request Flow",
+      "description": "Comparing plaintext HTTP and encrypted HTTPS request flows",
+      "category": "Application Layer",
+      "overview": "HTTP sends data in plaintext — anyone intercepting the traffic can read it. HTTPS adds TLS encryption, creating a secure tunnel. The extra TLS handshake adds latency but provides confidentiality and integrity.",
+      "steps": [
+        {
+          "id": 1,
+          "label": "TCP Handshake",
+          "description": "Both HTTP and HTTPS start with the standard TCP 3-way handshake to establish a connection.",
+          "from": "Client",
+          "to": "Server",
+          "packet_label": "SYN → SYN-ACK → ACK",
+          "color": "#06b6d4"
+        },
+        {
+          "id": 2,
+          "label": "TLS Handshake (HTTPS only)",
+          "description": "For HTTPS: Client and server negotiate encryption. Client verifies server's certificate. They agree on a shared encryption key.",
+          "from": "Client",
+          "to": "Server",
+          "packet_label": "🔒 TLS: ClientHello → ServerHello → Certificate → Key Exchange",
+          "color": "#f59e0b"
+        },
+        {
+          "id": 3,
+          "label": "HTTP Request",
+          "description": "HTTP: Request sent in PLAINTEXT — anyone can read it. HTTPS: Request is encrypted — only the server can decrypt it.",
+          "from": "Client",
+          "to": "Server",
+          "packet_label": "GET /page — HTTP: plaintext 👁️ | HTTPS: encrypted 🔒",
+          "color": "#8b5cf6"
+        },
+        {
+          "id": 4,
+          "label": "Server Response",
+          "description": "Server sends back the response. HTTP: visible to eavesdroppers. HTTPS: encrypted end-to-end.",
+          "from": "Server",
+          "to": "Client",
+          "packet_label": "200 OK + HTML — HTTP: readable 👁️ | HTTPS: encrypted 🔒",
+          "color": "#10b981"
+        }
+      ],
+      "key_concepts": [
+        "HTTPS = HTTP + TLS (Transport Layer Security)",
+        "TLS handshake adds 1-2 RTTs of latency",
+        "HTTPS verifies server identity via certificates",
+        "Modern HTTP/2 and HTTP/3 require HTTPS"
+      ]
+    }
+  }
+}

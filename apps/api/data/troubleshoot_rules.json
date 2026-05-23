@@ -1,0 +1,757 @@
+{
+  "issues": {
+    "high-ping": {
+      "label": "High Ping / Latency",
+      "description": "Experiencing high round-trip times when connecting to servers",
+      "icon": "📶",
+      "questions": [
+        {
+          "id": "hp_q1",
+          "text": "How are you connected to the network?",
+          "options": [
+            {"label": "WiFi", "value": "wifi"},
+            {"label": "Ethernet cable", "value": "ethernet"}
+          ],
+          "scoring": {
+            "wifi": {"wifi_interference": 3, "router_distance": 2, "isp_congestion": 1},
+            "ethernet": {"isp_congestion": 3, "routing_issue": 2, "mtu_mismatch": 1}
+          }
+        },
+        {
+          "id": "hp_q2",
+          "text": "When does the high ping occur?",
+          "options": [
+            {"label": "All the time", "value": "always"},
+            {"label": "Only during peak hours (evening)", "value": "peak"},
+            {"label": "Randomly throughout the day", "value": "random"},
+            {"label": "Only when others are using the network", "value": "shared"}
+          ],
+          "scoring": {
+            "always": {"routing_issue": 3, "mtu_mismatch": 2},
+            "peak": {"isp_congestion": 4, "bandwidth_saturation": 2},
+            "random": {"wifi_interference": 3, "packet_loss_issue": 2},
+            "shared": {"bandwidth_saturation": 4, "qos_missing": 2}
+          }
+        },
+        {
+          "id": "hp_q3",
+          "text": "What is your approximate ping to common servers (e.g., google.com)?",
+          "options": [
+            {"label": "50-100ms", "value": "moderate"},
+            {"label": "100-300ms", "value": "high"},
+            {"label": "300ms+", "value": "very_high"},
+            {"label": "Varies wildly (50ms then 500ms)", "value": "unstable"}
+          ],
+          "scoring": {
+            "moderate": {"isp_congestion": 2, "routing_issue": 1},
+            "high": {"isp_congestion": 3, "routing_issue": 3},
+            "very_high": {"routing_issue": 4, "vpn_overhead": 2},
+            "unstable": {"wifi_interference": 4, "packet_loss_issue": 3}
+          }
+        },
+        {
+          "id": "hp_q4",
+          "text": "Are you using a VPN?",
+          "options": [
+            {"label": "Yes", "value": "yes"},
+            {"label": "No", "value": "no"}
+          ],
+          "scoring": {
+            "yes": {"vpn_overhead": 4},
+            "no": {"isp_congestion": 1}
+          }
+        },
+        {
+          "id": "hp_q5",
+          "text": "How many devices are on your network?",
+          "options": [
+            {"label": "1-3 devices", "value": "few"},
+            {"label": "4-10 devices", "value": "moderate"},
+            {"label": "10+ devices", "value": "many"}
+          ],
+          "scoring": {
+            "few": {"routing_issue": 2},
+            "moderate": {"bandwidth_saturation": 2, "wifi_interference": 1},
+            "many": {"bandwidth_saturation": 4, "wifi_interference": 3}
+          }
+        }
+      ],
+      "causes": {
+        "wifi_interference": {
+          "title": "WiFi Interference",
+          "description": "Your WiFi signal is being disrupted by other wireless devices, neighboring networks, or physical obstacles. This causes inconsistent latency and packet loss.",
+          "solutions": [
+            "Switch to the 5GHz band if your router supports dual-band",
+            "Change your WiFi channel to avoid overlap with neighbors (use a WiFi analyzer app)",
+            "Move closer to your router or remove physical obstacles",
+            "Avoid placing the router near microwaves, baby monitors, or cordless phones",
+            "Consider upgrading to a WiFi 6 router for better interference handling"
+          ],
+          "related_protocols": ["arp-resolution", "dhcp-assignment"]
+        },
+        "isp_congestion": {
+          "title": "ISP Network Congestion",
+          "description": "Your Internet Service Provider's network is experiencing congestion, especially during peak usage hours. This is common in areas with shared bandwidth infrastructure like cable internet.",
+          "solutions": [
+            "Test your speed at different times to confirm peak-hour congestion",
+            "Contact your ISP to report consistent performance issues",
+            "Consider upgrading your internet plan for higher priority traffic",
+            "Use a wired connection to eliminate local WiFi as a factor",
+            "Try changing your DNS server to a faster one (8.8.8.8 or 1.1.1.1)"
+          ],
+          "related_protocols": ["tcp-congestion", "tcp-retransmission"]
+        },
+        "routing_issue": {
+          "title": "Routing / Path Problem",
+          "description": "Packets are taking an inefficient path to reach their destination, possibly due to suboptimal routing by your ISP or a misconfigured gateway.",
+          "solutions": [
+            "Run a traceroute to identify where delays occur: tracert google.com (Windows) or traceroute google.com (Mac/Linux)",
+            "Check if double NAT is occurring (router behind router)",
+            "Restart your modem and router to refresh routing tables",
+            "Contact your ISP if traceroute shows high latency at their network hops",
+            "Try a different DNS server to rule out DNS-related delays"
+          ],
+          "related_protocols": ["tcp-handshake", "dns-lookup"]
+        },
+        "bandwidth_saturation": {
+          "title": "Bandwidth Saturation",
+          "description": "Your network bandwidth is being fully utilized by multiple devices or applications, leaving insufficient capacity for your traffic.",
+          "solutions": [
+            "Enable QoS (Quality of Service) on your router to prioritize important traffic",
+            "Identify bandwidth-heavy applications (streaming, downloads) and limit them",
+            "Schedule large downloads for off-peak hours",
+            "Upgrade your internet plan if bandwidth is consistently insufficient",
+            "Use a network monitor to identify which devices consume the most bandwidth"
+          ],
+          "related_protocols": ["tcp-congestion"]
+        },
+        "mtu_mismatch": {
+          "title": "MTU Mismatch",
+          "description": "The Maximum Transmission Unit size doesn't match between your device and the network, causing packet fragmentation and increased latency.",
+          "solutions": [
+            "Test optimal MTU: ping google.com -f -l 1472 and reduce until no fragmentation",
+            "Set your network adapter's MTU to the optimal value found",
+            "Common optimal MTU values: 1500 (Ethernet), 1492 (PPPoE), 1400 (VPN)",
+            "Check your router settings for MTU configuration",
+            "Contact your ISP if MTU issues persist after local adjustments"
+          ],
+          "related_protocols": ["tcp-handshake", "udp-communication"]
+        },
+        "vpn_overhead": {
+          "title": "VPN Encryption Overhead",
+          "description": "Your VPN adds encryption overhead and routes traffic through remote servers, adding latency. The VPN server location and protocol also affect speed.",
+          "solutions": [
+            "Connect to a VPN server geographically closer to you",
+            "Try a different VPN protocol (WireGuard is faster than OpenVPN)",
+            "Use split tunneling to route only necessary traffic through VPN",
+            "Disable VPN when low latency is critical (gaming, video calls)",
+            "Check if your VPN provider offers optimized servers for your use case"
+          ],
+          "related_protocols": ["http-vs-https", "tcp-handshake"]
+        }
+      }
+    },
+    "packet-loss": {
+      "label": "Packet Loss",
+      "description": "Data packets are being dropped before reaching their destination",
+      "icon": "📦",
+      "questions": [
+        {
+          "id": "pl_q1",
+          "text": "How are you connected?",
+          "options": [
+            {"label": "WiFi", "value": "wifi"},
+            {"label": "Ethernet", "value": "ethernet"}
+          ],
+          "scoring": {
+            "wifi": {"wifi_signal_weak": 3, "channel_congestion": 2},
+            "ethernet": {"cable_fault": 3, "switch_overload": 2}
+          }
+        },
+        {
+          "id": "pl_q2",
+          "text": "What percentage of packet loss are you seeing?",
+          "options": [
+            {"label": "1-5%", "value": "low"},
+            {"label": "5-20%", "value": "medium"},
+            {"label": "20%+", "value": "high"}
+          ],
+          "scoring": {
+            "low": {"channel_congestion": 2, "isp_issue": 1},
+            "medium": {"wifi_signal_weak": 3, "cable_fault": 2},
+            "high": {"cable_fault": 4, "hardware_failure": 3}
+          }
+        },
+        {
+          "id": "pl_q3",
+          "text": "Is the packet loss consistent or intermittent?",
+          "options": [
+            {"label": "Consistent (always present)", "value": "consistent"},
+            {"label": "Intermittent (comes and goes)", "value": "intermittent"}
+          ],
+          "scoring": {
+            "consistent": {"cable_fault": 3, "hardware_failure": 3},
+            "intermittent": {"wifi_signal_weak": 3, "channel_congestion": 3}
+          }
+        }
+      ],
+      "causes": {
+        "wifi_signal_weak": {
+          "title": "Weak WiFi Signal",
+          "description": "Your device is too far from the router or obstacles are blocking the signal, causing packets to be lost in transmission.",
+          "solutions": [
+            "Move closer to your WiFi router",
+            "Remove physical obstructions between your device and the router",
+            "Add a WiFi extender or mesh system for better coverage",
+            "Update your network adapter drivers",
+            "Consider using a USB WiFi adapter with an external antenna"
+          ],
+          "related_protocols": ["tcp-retransmission", "arp-resolution"]
+        },
+        "cable_fault": {
+          "title": "Faulty Network Cable",
+          "description": "The Ethernet cable connecting your device may be damaged, poorly crimped, or too long, causing intermittent connectivity issues.",
+          "solutions": [
+            "Replace the Ethernet cable with a known-good one",
+            "Check cable connections at both ends for secure fit",
+            "Inspect the cable for visible damage, kinks, or sharp bends",
+            "Use Cat5e or Cat6 cable for reliable gigabit connections",
+            "Keep cable runs under 100 meters (328 feet)"
+          ],
+          "related_protocols": ["tcp-retransmission"]
+        },
+        "channel_congestion": {
+          "title": "WiFi Channel Congestion",
+          "description": "Too many nearby networks are using the same WiFi channel, causing interference and packet loss.",
+          "solutions": [
+            "Use a WiFi analyzer app to find the least congested channel",
+            "Switch to the 5GHz band which has more available channels",
+            "Manually set your router to the optimal channel",
+            "Consider using DFS channels on 5GHz if supported",
+            "Upgrade to WiFi 6 which handles dense environments better"
+          ],
+          "related_protocols": ["arp-resolution"]
+        },
+        "hardware_failure": {
+          "title": "Network Hardware Failure",
+          "description": "Your router, modem, or network adapter may be failing, causing consistent packet loss.",
+          "solutions": [
+            "Restart your router and modem (power cycle for 30 seconds)",
+            "Check if the router is overheating and ensure ventilation",
+            "Update your router's firmware to the latest version",
+            "Test with a different device to isolate the problem",
+            "Consider replacing aging network equipment (5+ years old)"
+          ],
+          "related_protocols": ["tcp-retransmission", "arp-resolution"]
+        }
+      }
+    },
+    "dns-failure": {
+      "label": "DNS Failure",
+      "description": "Unable to resolve domain names to IP addresses",
+      "icon": "🔍",
+      "questions": [
+        {
+          "id": "dns_q1",
+          "text": "Can you access websites by their IP address? (e.g., http://142.250.80.46 for Google)",
+          "options": [
+            {"label": "Yes, IP access works", "value": "ip_works"},
+            {"label": "No, even IPs don't work", "value": "ip_fails"}
+          ],
+          "scoring": {
+            "ip_works": {"dns_server_down": 4, "dns_config_wrong": 3},
+            "ip_fails": {"no_internet": 4, "firewall_block": 2}
+          }
+        },
+        {
+          "id": "dns_q2",
+          "text": "Are all websites failing or just specific ones?",
+          "options": [
+            {"label": "All websites fail", "value": "all"},
+            {"label": "Only some websites", "value": "some"}
+          ],
+          "scoring": {
+            "all": {"dns_server_down": 3, "dns_config_wrong": 3},
+            "some": {"dns_cache_stale": 3, "dns_propagation": 3}
+          }
+        },
+        {
+          "id": "dns_q3",
+          "text": "Have you recently changed any network settings?",
+          "options": [
+            {"label": "Yes", "value": "yes"},
+            {"label": "No", "value": "no"}
+          ],
+          "scoring": {
+            "yes": {"dns_config_wrong": 4},
+            "no": {"dns_server_down": 2, "dns_cache_stale": 2}
+          }
+        }
+      ],
+      "causes": {
+        "dns_server_down": {
+          "title": "DNS Server Unreachable",
+          "description": "Your configured DNS server is down or unreachable. This prevents your computer from translating domain names to IP addresses.",
+          "solutions": [
+            "Switch to a public DNS: Google (8.8.8.8) or Cloudflare (1.1.1.1)",
+            "Open network adapter settings and manually set DNS servers",
+            "Flush your DNS cache: ipconfig /flushdns (Windows) or sudo dscacheutil -flushcache (Mac)",
+            "Restart your router to refresh its DNS configuration",
+            "Check if your ISP's DNS servers are experiencing an outage"
+          ],
+          "related_protocols": ["dns-lookup"]
+        },
+        "dns_config_wrong": {
+          "title": "DNS Configuration Error",
+          "description": "Your DNS settings are misconfigured — either the DNS server addresses are wrong or DHCP isn't providing correct DNS info.",
+          "solutions": [
+            "Check your network adapter's DNS settings",
+            "Try setting DNS to automatic (via DHCP)",
+            "Manually configure DNS to 8.8.8.8 and 8.8.4.4",
+            "Verify your router's DHCP settings are providing correct DNS",
+            "Run 'nslookup google.com' to test DNS resolution"
+          ],
+          "related_protocols": ["dns-lookup", "dhcp-assignment"]
+        },
+        "dns_cache_stale": {
+          "title": "Stale DNS Cache",
+          "description": "Your computer or router has cached outdated DNS records that no longer point to the correct IP addresses.",
+          "solutions": [
+            "Flush DNS cache: ipconfig /flushdns (Windows)",
+            "Clear your browser's DNS cache (chrome://net-internals/#dns in Chrome)",
+            "Restart your router to clear its DNS cache",
+            "Try accessing the website in an incognito/private window",
+            "Wait for TTL expiration if a website recently changed servers"
+          ],
+          "related_protocols": ["dns-lookup"]
+        },
+        "no_internet": {
+          "title": "No Internet Connectivity",
+          "description": "The issue isn't DNS-specific — you have no internet connectivity at all. DNS failures are a symptom of a larger connectivity problem.",
+          "solutions": [
+            "Check if your router has internet connectivity (check router admin page)",
+            "Restart your modem and router",
+            "Check if your ISP is experiencing an outage",
+            "Verify all cables are securely connected",
+            "Try connecting a different device to confirm"
+          ],
+          "related_protocols": ["dhcp-assignment", "tcp-handshake"]
+        }
+      }
+    },
+    "slow-internet": {
+      "label": "Slow Internet Speed",
+      "description": "Internet connection is significantly slower than expected",
+      "icon": "🐌",
+      "questions": [
+        {
+          "id": "si_q1",
+          "text": "What speed are you paying for vs. getting?",
+          "options": [
+            {"label": "Getting less than 50% of paid speed", "value": "very_slow"},
+            {"label": "Getting 50-80% of paid speed", "value": "somewhat_slow"},
+            {"label": "Speed varies widely throughout the day", "value": "variable"}
+          ],
+          "scoring": {
+            "very_slow": {"bandwidth_throttle": 3, "hardware_bottleneck": 3},
+            "somewhat_slow": {"wifi_limitation": 2, "congestion": 2},
+            "variable": {"congestion": 4, "wifi_limitation": 2}
+          }
+        },
+        {
+          "id": "si_q2",
+          "text": "Connection type?",
+          "options": [
+            {"label": "WiFi", "value": "wifi"},
+            {"label": "Ethernet", "value": "ethernet"}
+          ],
+          "scoring": {
+            "wifi": {"wifi_limitation": 3},
+            "ethernet": {"hardware_bottleneck": 2, "bandwidth_throttle": 2}
+          }
+        },
+        {
+          "id": "si_q3",
+          "text": "Is the slowness specific to certain websites or all traffic?",
+          "options": [
+            {"label": "All websites and services", "value": "all"},
+            {"label": "Only certain websites", "value": "specific"},
+            {"label": "Only downloads/uploads", "value": "transfers"}
+          ],
+          "scoring": {
+            "all": {"bandwidth_throttle": 3, "congestion": 2},
+            "specific": {"server_side": 4},
+            "transfers": {"bandwidth_throttle": 3, "hardware_bottleneck": 2}
+          }
+        }
+      ],
+      "causes": {
+        "wifi_limitation": {
+          "title": "WiFi Speed Limitation",
+          "description": "Your WiFi connection is the bottleneck. Older WiFi standards, distance from router, and interference can significantly reduce speeds.",
+          "solutions": [
+            "Connect via Ethernet cable for maximum speed",
+            "Move closer to the router for a stronger signal",
+            "Use the 5GHz band for faster speeds (shorter range)",
+            "Update your WiFi adapter drivers",
+            "Upgrade to a WiFi 6 router if using older hardware"
+          ],
+          "related_protocols": ["tcp-congestion"]
+        },
+        "bandwidth_throttle": {
+          "title": "ISP Bandwidth Throttling",
+          "description": "Your ISP may be intentionally slowing your connection, especially for certain types of traffic like streaming or P2P.",
+          "solutions": [
+            "Run speed tests at different times and compare results",
+            "Try a VPN to see if speeds improve (bypasses traffic shaping)",
+            "Contact your ISP to inquire about throttling policies",
+            "Check if you've exceeded any data caps",
+            "Consider switching to an ISP that doesn't throttle"
+          ],
+          "related_protocols": ["tcp-congestion", "http-vs-https"]
+        },
+        "congestion": {
+          "title": "Network Congestion",
+          "description": "Too many users on the same network segment or ISP node are consuming bandwidth simultaneously.",
+          "solutions": [
+            "Test speeds during off-peak hours to confirm congestion",
+            "Enable QoS on your router",
+            "Limit the number of simultaneous connections",
+            "Report persistent congestion to your ISP",
+            "Consider a business-grade connection for guaranteed bandwidth"
+          ],
+          "related_protocols": ["tcp-congestion", "tcp-retransmission"]
+        },
+        "hardware_bottleneck": {
+          "title": "Hardware Bottleneck",
+          "description": "Your router, modem, or network adapter may not support the speeds you're paying for.",
+          "solutions": [
+            "Check your router's maximum throughput specification",
+            "Verify your Ethernet adapter supports Gigabit speeds",
+            "Update firmware on your router and modem",
+            "Replace any 10/100 Mbps equipment with Gigabit-capable devices",
+            "Check if your modem supports your ISP's DOCSIS version"
+          ],
+          "related_protocols": ["tcp-handshake"]
+        },
+        "server_side": {
+          "title": "Server-Side Limitation",
+          "description": "The slowness is on the remote server's end, not your connection. The website or service you're accessing may be overloaded.",
+          "solutions": [
+            "Check if other users report the same issue (downdetector.com)",
+            "Try accessing the service from a different network",
+            "Clear your browser cache and cookies",
+            "Try a different browser or incognito mode",
+            "Wait and retry later if the server is experiencing high load"
+          ],
+          "related_protocols": ["http-vs-https", "dns-lookup"]
+        }
+      }
+    },
+    "websites-not-loading": {
+      "label": "Websites Not Loading",
+      "description": "Web pages fail to load or show connection errors",
+      "icon": "🌐",
+      "questions": [
+        {
+          "id": "wnl_q1",
+          "text": "What error are you seeing?",
+          "options": [
+            {"label": "ERR_NAME_NOT_RESOLVED / DNS error", "value": "dns_error"},
+            {"label": "Connection timed out", "value": "timeout"},
+            {"label": "Connection refused", "value": "refused"},
+            {"label": "SSL/Certificate error", "value": "ssl_error"}
+          ],
+          "scoring": {
+            "dns_error": {"dns_issue": 4},
+            "timeout": {"firewall_block": 3, "isp_issue": 2},
+            "refused": {"firewall_block": 3, "proxy_misconfigured": 2},
+            "ssl_error": {"cert_issue": 4, "clock_wrong": 2}
+          }
+        },
+        {
+          "id": "wnl_q2",
+          "text": "Can you access any websites at all?",
+          "options": [
+            {"label": "No websites work", "value": "none"},
+            {"label": "Some work, some don't", "value": "partial"}
+          ],
+          "scoring": {
+            "none": {"dns_issue": 3, "no_connectivity": 3},
+            "partial": {"firewall_block": 3, "dns_issue": 1}
+          }
+        },
+        {
+          "id": "wnl_q3",
+          "text": "Do other devices on the same network have the same problem?",
+          "options": [
+            {"label": "Yes, all devices affected", "value": "all_devices"},
+            {"label": "No, only my device", "value": "only_mine"}
+          ],
+          "scoring": {
+            "all_devices": {"dns_issue": 2, "isp_issue": 3},
+            "only_mine": {"firewall_block": 3, "proxy_misconfigured": 3, "dns_issue": 1}
+          }
+        }
+      ],
+      "causes": {
+        "dns_issue": {
+          "title": "DNS Resolution Failure",
+          "description": "Your device cannot translate domain names into IP addresses. This is the most common cause of websites not loading.",
+          "solutions": [
+            "Change DNS to 8.8.8.8 (Google) or 1.1.1.1 (Cloudflare)",
+            "Flush DNS cache: ipconfig /flushdns",
+            "Restart your router and modem",
+            "Check network adapter DNS settings",
+            "Disable any DNS filtering software temporarily"
+          ],
+          "related_protocols": ["dns-lookup"]
+        },
+        "firewall_block": {
+          "title": "Firewall or Security Software Blocking",
+          "description": "Your firewall, antivirus, or security software is blocking web traffic on ports 80/443.",
+          "solutions": [
+            "Temporarily disable your firewall to test",
+            "Check firewall rules for blocked ports (80, 443)",
+            "Add your browser to the firewall whitelist",
+            "Check if parental controls are blocking sites",
+            "Review antivirus web protection settings"
+          ],
+          "related_protocols": ["http-vs-https", "tcp-handshake"]
+        },
+        "cert_issue": {
+          "title": "SSL/TLS Certificate Problem",
+          "description": "The website's security certificate is invalid, expired, or your system doesn't trust it.",
+          "solutions": [
+            "Check your system clock — incorrect time causes certificate errors",
+            "Clear browser SSL state and cached certificates",
+            "Update your browser to the latest version",
+            "Check if the website's certificate has actually expired",
+            "Try accessing the HTTP version if available (not recommended for sensitive sites)"
+          ],
+          "related_protocols": ["http-vs-https"]
+        },
+        "no_connectivity": {
+          "title": "No Internet Connectivity",
+          "description": "Your device has lost its internet connection entirely.",
+          "solutions": [
+            "Check WiFi/Ethernet connection status",
+            "Restart your network adapter",
+            "Power cycle your router and modem",
+            "Run network troubleshooter in your OS settings",
+            "Contact your ISP if the problem persists"
+          ],
+          "related_protocols": ["dhcp-assignment", "tcp-handshake"]
+        }
+      }
+    },
+    "gaming-lag": {
+      "label": "Gaming Lag",
+      "description": "Experiencing lag, rubber-banding, or disconnections while gaming",
+      "icon": "🎮",
+      "questions": [
+        {
+          "id": "gl_q1",
+          "text": "What type of lag are you experiencing?",
+          "options": [
+            {"label": "Constant high ping (200ms+)", "value": "high_ping"},
+            {"label": "Ping spikes (jumps from 30ms to 500ms+)", "value": "spikes"},
+            {"label": "Rubber-banding (teleporting back)", "value": "rubberbanding"},
+            {"label": "Complete disconnections", "value": "disconnects"}
+          ],
+          "scoring": {
+            "high_ping": {"server_distance": 3, "isp_routing": 2},
+            "spikes": {"wifi_instability": 3, "background_traffic": 2},
+            "rubberbanding": {"packet_loss_gaming": 4, "wifi_instability": 2},
+            "disconnects": {"wifi_instability": 3, "isp_issue_gaming": 3}
+          }
+        },
+        {
+          "id": "gl_q2",
+          "text": "Are you connected via WiFi or Ethernet?",
+          "options": [
+            {"label": "WiFi", "value": "wifi"},
+            {"label": "Ethernet", "value": "ethernet"}
+          ],
+          "scoring": {
+            "wifi": {"wifi_instability": 4},
+            "ethernet": {"isp_routing": 2, "server_distance": 2}
+          }
+        },
+        {
+          "id": "gl_q3",
+          "text": "Are other applications running in the background?",
+          "options": [
+            {"label": "Yes, streaming/downloads", "value": "heavy_bg"},
+            {"label": "Yes, some apps", "value": "light_bg"},
+            {"label": "No, only the game", "value": "none"}
+          ],
+          "scoring": {
+            "heavy_bg": {"background_traffic": 4},
+            "light_bg": {"background_traffic": 2},
+            "none": {"server_distance": 2, "isp_routing": 2}
+          }
+        }
+      ],
+      "causes": {
+        "wifi_instability": {
+          "title": "WiFi Instability",
+          "description": "WiFi introduces variable latency (jitter) which is particularly problematic for real-time gaming. Even small fluctuations cause noticeable lag.",
+          "solutions": [
+            "Switch to a wired Ethernet connection (most impactful fix)",
+            "If WiFi is mandatory, use 5GHz band and sit close to the router",
+            "Disable other WiFi devices during gaming sessions",
+            "Enable QoS on your router and prioritize gaming traffic",
+            "Use a powerline adapter as an alternative to WiFi"
+          ],
+          "related_protocols": ["udp-communication", "tcp-retransmission"]
+        },
+        "server_distance": {
+          "title": "Game Server Distance",
+          "description": "You're connecting to a game server that's geographically far from you, resulting in inherently high latency.",
+          "solutions": [
+            "Select a game server in your region if the game allows it",
+            "Check the game's server browser for closest servers",
+            "Consider a gaming VPN that routes through optimized paths",
+            "Accept that some base latency is unavoidable for distant servers",
+            "Check if the game supports server migration or region selection"
+          ],
+          "related_protocols": ["tcp-handshake", "udp-communication"]
+        },
+        "background_traffic": {
+          "title": "Background Network Traffic",
+          "description": "Other applications or devices are consuming bandwidth, causing your game traffic to be delayed or dropped.",
+          "solutions": [
+            "Close streaming services, downloads, and cloud syncing during gaming",
+            "Enable QoS on your router and prioritize gaming traffic",
+            "Schedule Windows updates for non-gaming hours",
+            "Ask others on your network to reduce heavy usage during your gaming time",
+            "Use Task Manager to identify and close bandwidth-heavy processes"
+          ],
+          "related_protocols": ["tcp-congestion", "udp-communication"]
+        },
+        "isp_routing": {
+          "title": "ISP Routing Issue",
+          "description": "Your ISP is routing your traffic through suboptimal paths, adding unnecessary hops and latency to reach game servers.",
+          "solutions": [
+            "Run a traceroute to the game server to identify problematic hops",
+            "Contact your ISP with traceroute evidence of poor routing",
+            "Try a gaming VPN/tunneling service (ExitLag, WTFast) for optimized routes",
+            "Test during off-peak hours to see if routing improves",
+            "Consider a different ISP if routing is consistently poor"
+          ],
+          "related_protocols": ["tcp-handshake", "dns-lookup"]
+        }
+      }
+    },
+    "unstable-wifi": {
+      "label": "Unstable WiFi",
+      "description": "WiFi connection keeps dropping or is unreliable",
+      "icon": "📡",
+      "questions": [
+        {
+          "id": "uw_q1",
+          "text": "How often does the WiFi disconnect?",
+          "options": [
+            {"label": "Every few minutes", "value": "frequent"},
+            {"label": "A few times per hour", "value": "moderate"},
+            {"label": "A few times per day", "value": "occasional"},
+            {"label": "Signal is weak but doesn't fully disconnect", "value": "weak_signal"}
+          ],
+          "scoring": {
+            "frequent": {"driver_issue": 3, "router_overload": 3},
+            "moderate": {"interference": 3, "dhcp_lease_issue": 2},
+            "occasional": {"interference": 2, "power_saving": 3},
+            "weak_signal": {"distance_obstacle": 4}
+          }
+        },
+        {
+          "id": "uw_q2",
+          "text": "Does reconnecting fix the issue temporarily?",
+          "options": [
+            {"label": "Yes, works fine after reconnecting", "value": "reconnect_fixes"},
+            {"label": "No, remains unstable after reconnecting", "value": "still_unstable"}
+          ],
+          "scoring": {
+            "reconnect_fixes": {"power_saving": 3, "dhcp_lease_issue": 2},
+            "still_unstable": {"interference": 3, "router_overload": 3}
+          }
+        },
+        {
+          "id": "uw_q3",
+          "text": "Are other devices also affected?",
+          "options": [
+            {"label": "Yes, all devices drop WiFi", "value": "all"},
+            {"label": "No, only my device", "value": "only_mine"}
+          ],
+          "scoring": {
+            "all": {"router_overload": 4, "interference": 2},
+            "only_mine": {"driver_issue": 4, "power_saving": 3}
+          }
+        }
+      ],
+      "causes": {
+        "driver_issue": {
+          "title": "Network Adapter Driver Issue",
+          "description": "Your WiFi adapter's driver is outdated, buggy, or incompatible, causing frequent disconnections.",
+          "solutions": [
+            "Update your WiFi adapter driver from the manufacturer's website",
+            "Uninstall and reinstall the WiFi driver",
+            "Roll back to a previous driver version if a recent update caused issues",
+            "Check Device Manager for any warning icons on your network adapter",
+            "Try disabling and re-enabling the adapter in Device Manager"
+          ],
+          "related_protocols": ["dhcp-assignment"]
+        },
+        "interference": {
+          "title": "Wireless Interference",
+          "description": "Other electronic devices or neighboring WiFi networks are interfering with your signal.",
+          "solutions": [
+            "Use a WiFi analyzer to find the least congested channel",
+            "Switch from 2.4GHz to 5GHz band",
+            "Move the router away from microwaves, baby monitors, and Bluetooth devices",
+            "Reposition the router to a central, elevated location",
+            "Reduce the number of obstacles between you and the router"
+          ],
+          "related_protocols": ["arp-resolution"]
+        },
+        "router_overload": {
+          "title": "Router Overloaded",
+          "description": "Your router is overwhelmed with too many connected devices or traffic, causing it to drop connections.",
+          "solutions": [
+            "Restart your router to clear its memory",
+            "Check how many devices are connected and disconnect unused ones",
+            "Update your router's firmware",
+            "Reduce the maximum number of DHCP clients if configurable",
+            "Upgrade to a more capable router if yours is consistently overloaded"
+          ],
+          "related_protocols": ["dhcp-assignment", "arp-resolution"]
+        },
+        "power_saving": {
+          "title": "WiFi Power Management",
+          "description": "Your device's power-saving features are turning off the WiFi adapter to conserve battery, causing disconnections.",
+          "solutions": [
+            "Disable WiFi power saving: Device Manager → Network Adapter → Properties → Power Management → Uncheck 'Allow the computer to turn off this device'",
+            "Set your power plan to 'High Performance' when on AC power",
+            "Adjust wireless adapter power saving mode to 'Maximum Performance'",
+            "Disable sleep/hibernate if disconnections happen after idle periods",
+            "Keep your laptop plugged in during important network tasks"
+          ],
+          "related_protocols": ["dhcp-assignment"]
+        },
+        "distance_obstacle": {
+          "title": "Distance / Obstacles",
+          "description": "You are too far from the WiFi router, or walls/floors/objects are blocking the signal.",
+          "solutions": [
+            "Move closer to the router or reposition the router centrally",
+            "Install a WiFi range extender or mesh system",
+            "Use a powerline adapter with WiFi for distant rooms",
+            "Remove or reduce obstacles between you and the router",
+            "Upgrade to a WiFi 6 router with better range and wall penetration"
+          ],
+          "related_protocols": ["arp-resolution"]
+        }
+      }
+    }
+  }
+}
